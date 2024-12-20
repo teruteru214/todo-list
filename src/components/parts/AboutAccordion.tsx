@@ -1,4 +1,11 @@
-import { Filter, Pencil, Plus, SquareCheckBigIcon, Trash2 } from "lucide-react";
+import {
+	ListTodo,
+	Pencil,
+	Plus,
+	Square,
+	SquareCheck,
+	Trash2,
+} from "lucide-react";
 import {
 	Accordion,
 	AccordionContent,
@@ -17,12 +24,16 @@ export function AboutAccordion() {
 						<p>・・・Taskの作成</p>
 					</ul>
 					<ul className="flex items-center">
-						<Filter />
-						<p>・・・Taskの絞り込み</p>
+						<ListTodo />
+						<p>・・・Task(全件)の表示</p>
 					</ul>
 					<ul className="flex items-center">
-						<SquareCheckBigIcon />
-						<p>・・・Task完了時にチェック</p>
+						<SquareCheck />
+						<p>・・・Task(完了)の表示</p>
+					</ul>
+					<ul className="flex items-center">
+						<Square />
+						<p>・・・Task(未完了)の表示</p>
 					</ul>
 					<ul className="flex items-center">
 						<Pencil />

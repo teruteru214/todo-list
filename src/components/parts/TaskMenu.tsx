@@ -1,24 +1,20 @@
-import { Filter, Plus, X } from "lucide-react";
-import { useState } from "react";
+import { ListTodo, Plus, Square, SquareCheck } from "lucide-react";
 import { useTaskManager } from "../../hooks";
 import type { TasksProp } from "../../types";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { TaskDialog } from "./TaskDialog";
 import TaskTable from "./TaskTable";
 
-function TaskMenu({ tasks }: TasksProp) {
+function TaskMenu({ tasks: initialTasks }: TasksProp) {
 	const {
-		tasks: filteredTasks,
+		filteredTasks,
+		filter,
+		setFilter,
 		addTask,
 		updateTask,
 		toggleTaskDone,
 		deleteTask,
-		setFilter,
-		filterText,
-	} = useTaskManager(tasks);
-
-	const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
+	} = useTaskManager(initialTasks);
 
 	return (
 		<div className="p-4 rounded-lg shadow-lg">
@@ -31,24 +27,32 @@ function TaskMenu({ tasks }: TasksProp) {
 						</Button>
 					}
 				/>
-				<Button
-					variant="outline"
-					size="icon"
-					onClick={() => setIsFilterVisible((prev) => !prev)}
-				>
-					{isFilterVisible ? <X /> : <Filter />}
-				</Button>
+				<div className="space-x-4">
+					<Button
+						variant={filter === "all" ? "default" : "outline"}
+						size="icon"
+						onClick={() => setFilter("all")}
+					>
+						<ListTodo />
+					</Button>
+					<Button
+						variant={filter === "completed" ? "default" : "outline"}
+						size="icon"
+						onClick={() => setFilter("completed")}
+					>
+						<SquareCheck />
+					</Button>
+					<Button
+						variant={filter === "incomplete" ? "default" : "outline"}
+						size="icon"
+						onClick={() => setFilter("incomplete")}
+					>
+						<Square />
+					</Button>
+				</div>
 			</div>
-			{isFilterVisible && (
-				<Input
-					placeholder="Taskの絞り込みができます"
-					className="my-4"
-					value={filterText}
-					onChange={(e) => setFilter(e.target.value)}
-				/>
-			)}
 			<TaskTable
-				tasks={filteredTasks}
+				tasks={filteredTasks} // フィルタリングされたタスクを表示
 				onToggleTaskDone={toggleTaskDone}
 				onDeleteTask={deleteTask}
 				onUpdateTask={updateTask}

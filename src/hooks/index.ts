@@ -3,13 +3,9 @@ import type { Task } from "../types";
 
 export function useTaskManager(initialTasks: Task[]) {
 	const [tasks, setTasks] = useState<Task[]>(initialTasks);
-	const [filterText, setFilterText] = useState<string>("");
-
-	const filteredTasks = useMemo(() => {
-		return tasks.filter((task) =>
-			task.name.toLowerCase().includes(filterText.toLowerCase()),
-		);
-	}, [tasks, filterText]);
+	const [filter, setFilter] = useState<"all" | "completed" | "incomplete">(
+		"all",
+	);
 
 	const addTask = useCallback(
 		(newTask: Omit<Task, "id">) => {
@@ -42,18 +38,23 @@ export function useTaskManager(initialTasks: Task[]) {
 		setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
 	}, []);
 
-	const setFilter = useCallback((text: string) => {
-		setFilterText(text);
-	}, []);
+	const filteredTasks = useMemo(() => {
+		return tasks.filter((task) => {
+			if (filter === "completed") return task.done;
+			if (filter === "incomplete") return !task.done;
+			return true;
+		});
+	}, [tasks, filter]);
 
 	return {
-		tasks: filteredTasks,
+		tasks,
+		filteredTasks,
+		filter,
+		setFilter,
 		addTask,
 		updateTask,
 		toggleTaskDone,
 		deleteTask,
-		setFilter,
-		filterText,
 	};
 }
 
