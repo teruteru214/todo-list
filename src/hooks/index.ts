@@ -10,7 +10,7 @@ export function useTaskManager(initialTasks: Task[]) {
 	const addTasks = useCallback(
 		(newTasks: Omit<Task, "id">[]) => {
 			const tasksWithIds = newTasks.map((task, index) => ({
-				id: tasks.length + index + 1, // タスクごとに一意のIDを付与
+				id: tasks.length + index + 1,
 				...task,
 			}));
 			setTasks((prevTasks) => [...prevTasks, ...tasksWithIds]);
