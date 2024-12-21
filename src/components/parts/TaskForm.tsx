@@ -29,43 +29,39 @@ const formSchema = z.object({
 });
 
 interface TaskFormProps {
-	task?: { id: number; name: string; schedule?: Date; done: boolean };
-	onTaskAdd: (task: { name: string; schedule?: Date; done: boolean }) => void;
-	onTaskUpdate?: (task: {
+	task: { id: number; name: string; schedule?: Date; complete: boolean };
+	onTaskUpdate: (task: {
 		id: number;
 		name: string;
 		schedule?: Date;
-		done: boolean;
+		complete: boolean;
 	}) => void;
 }
 
-export function TaskForm({ task, onTaskAdd, onTaskUpdate }: TaskFormProps) {
+export function TaskForm({ task, onTaskUpdate }: TaskFormProps) {
 	const form = useForm<z.infer<typeof formSchema>>({
 		defaultValues: {
-			name: task?.name || "",
-			schedule: task?.schedule
+			name: task.name,
+			schedule: task.schedule
 				? format(new Date(task.schedule), "yyyy-MM-dd")
 				: "",
-			complete: task?.done || false,
+			complete: task.complete,
 		},
 		resolver: zodResolver(formSchema),
 	});
 
 	const [date, setDate] = useState<Date | undefined>(
-		task?.schedule ? new Date(task.schedule) : undefined,
+		task.schedule ? new Date(task.schedule) : undefined,
 	);
 
 	const handleSubmit = (data: z.infer<typeof formSchema>) => {
 		const taskData = {
+			id: task.id,
 			name: data.name,
 			schedule: data.schedule ? new Date(data.schedule) : undefined,
-			done: data.complete,
+			complete: data.complete,
 		};
-		if (task) {
-			onTaskUpdate?.({ ...task, ...taskData });
-		} else {
-			onTaskAdd(taskData);
-		}
+		onTaskUpdate(taskData);
 		form.reset();
 		setDate(undefined);
 	};
@@ -104,7 +100,7 @@ export function TaskForm({ task, onTaskAdd, onTaskUpdate }: TaskFormProps) {
 										>
 											<CalendarIcon className="mr-2" />
 											{date ? (
-												format(date, "PPP")
+												format(date, "yyyy/MM/dd")
 											) : (
 												<span>日にちを入力してください</span>
 											)}
@@ -130,32 +126,30 @@ export function TaskForm({ task, onTaskAdd, onTaskUpdate }: TaskFormProps) {
 						</FormItem>
 					)}
 				/>
-				{!task && (
-					<FormField
-						control={form.control}
-						name="complete"
-						render={({ field }) => (
-							<FormItem className="flex flex-col">
-								<FormLabel className="mb-1">
-									Taskが完了済みの場合はチェックを入れてください
-								</FormLabel>
-								<FormControl>
-									<Checkbox
-										checked={field.value}
-										onCheckedChange={field.onChange}
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-				)}
+				<FormField
+					control={form.control}
+					name="complete"
+					render={({ field }) => (
+						<FormItem className="flex flex-col">
+							<FormLabel className="mb-1">
+								Taskが完了済みの場合はチェックを入れてください
+							</FormLabel>
+							<FormControl>
+								<Checkbox
+									checked={field.value}
+									onCheckedChange={field.onChange}
+								/>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
 				<Button
 					type="submit"
 					className="w-full"
 					disabled={!form.formState.isValid}
 				>
-					{task ? "更新する" : "登録する"}
+					更新する
 				</Button>
 			</form>
 		</Form>

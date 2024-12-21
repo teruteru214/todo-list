@@ -4,21 +4,21 @@ import TaskMenu from "./components/parts/TaskMenu";
 const tasks = [
 	{
 		id: 1,
-		done: false,
 		name: "リーダブルコードを読む",
 		schedule: new Date("2024-12-17"),
+		complete: false,
 	},
 	{
 		id: 2,
-		done: true,
 		name: "新しいAPIのドキュメントを確認",
 		schedule: new Date("2024-12-16"),
+		complete: true,
 	},
 	{
 		id: 3,
-		done: false,
 		name: "バグ修正を行う",
 		schedule: new Date("2024-12-20"),
+		complete: false,
 	},
 ];
 

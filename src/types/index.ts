@@ -1,8 +1,8 @@
 export interface Task {
 	id: number;
-	done: boolean;
 	name: string;
 	schedule?: Date;
+	complete: boolean;
 }
 
 export interface TasksProp {

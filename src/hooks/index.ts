@@ -7,13 +7,13 @@ export function useTaskManager(initialTasks: Task[]) {
 		"all",
 	);
 
-	const addTask = useCallback(
-		(newTask: Omit<Task, "id">) => {
-			const newTaskWithId = {
-				id: tasks.length + 1,
-				...newTask,
-			};
-			setTasks((prevTasks) => [...prevTasks, newTaskWithId]);
+	const addTasks = useCallback(
+		(newTasks: Omit<Task, "id">[]) => {
+			const tasksWithIds = newTasks.map((task, index) => ({
+				id: tasks.length + index + 1, // タスクごとに一意のIDを付与
+				...task,
+			}));
+			setTasks((prevTasks) => [...prevTasks, ...tasksWithIds]);
 		},
 		[tasks],
 	);
@@ -26,10 +26,10 @@ export function useTaskManager(initialTasks: Task[]) {
 		);
 	}, []);
 
-	const toggleTaskDone = useCallback((taskId: number) => {
+	const toggleTaskComplete = useCallback((taskId: number) => {
 		setTasks((prevTasks) =>
 			prevTasks.map((task) =>
-				task.id === taskId ? { ...task, done: !task.done } : task,
+				task.id === taskId ? { ...task, complete: !task.complete } : task,
 			),
 		);
 	}, []);
@@ -40,8 +40,8 @@ export function useTaskManager(initialTasks: Task[]) {
 
 	const filteredTasks = useMemo(() => {
 		return tasks.filter((task) => {
-			if (filter === "completed") return task.done;
-			if (filter === "incomplete") return !task.done;
+			if (filter === "completed") return task.complete;
+			if (filter === "incomplete") return !task.complete;
 			return true;
 		});
 	}, [tasks, filter]);
@@ -51,16 +51,19 @@ export function useTaskManager(initialTasks: Task[]) {
 		filteredTasks,
 		filter,
 		setFilter,
-		addTask,
+		addTasks,
 		updateTask,
-		toggleTaskDone,
+		toggleTaskComplete,
 		deleteTask,
 	};
 }
 
-export const getDateClassName = (schedule: Date | undefined, done: boolean) => {
+export const getDateClassName = (
+	schedule: Date | undefined,
+	complete: boolean,
+) => {
 	return useMemo(() => {
-		if (!schedule || done) return "";
+		if (!schedule || complete) return "";
 		const today = new Date();
 		const todayMidnight = new Date(today.setHours(0, 0, 0, 0));
 		const taskDate = new Date(schedule.setHours(0, 0, 0, 0));
@@ -69,5 +72,5 @@ export const getDateClassName = (schedule: Date | undefined, done: boolean) => {
 		if (taskDate.getTime() === todayMidnight.getTime())
 			return "bg-yellow-500 text-white";
 		return "";
-	}, [schedule, done]);
+	}, [schedule, complete]);
 };

@@ -10,9 +10,9 @@ function TaskMenu({ tasks: initialTasks }: TasksProp) {
 		filteredTasks,
 		filter,
 		setFilter,
-		addTask,
+		addTasks,
 		updateTask,
-		toggleTaskDone,
+		toggleTaskComplete,
 		deleteTask,
 	} = useTaskManager(initialTasks);
 
@@ -20,7 +20,7 @@ function TaskMenu({ tasks: initialTasks }: TasksProp) {
 		<div className="p-4 rounded-lg shadow-lg">
 			<div className="my-4 flex justify-between">
 				<TaskDialog
-					onTaskAdd={addTask}
+					onTasksAdd={addTasks}
 					triggerElement={
 						<Button variant="outline" size="icon">
 							<Plus />
@@ -52,8 +52,8 @@ function TaskMenu({ tasks: initialTasks }: TasksProp) {
 				</div>
 			</div>
 			<TaskTable
-				tasks={filteredTasks} // フィルタリングされたタスクを表示
-				onToggleTaskDone={toggleTaskDone}
+				tasks={filteredTasks}
+				onToggleTaskComplete={toggleTaskComplete}
 				onDeleteTask={deleteTask}
 				onUpdateTask={updateTask}
 			/>

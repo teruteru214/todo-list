@@ -15,14 +15,14 @@ import { TaskDialog } from "./TaskDialog";
 
 interface TaskTableProps {
 	tasks: Task[];
-	onToggleTaskDone: (taskId: number) => void;
+	onToggleTaskComplete: (taskId: number) => void;
 	onDeleteTask: (taskId: number) => void;
 	onUpdateTask: (task: Task) => void;
 }
 
 function TaskTable({
 	tasks,
-	onToggleTaskDone,
+	onToggleTaskComplete,
 	onDeleteTask,
 	onUpdateTask,
 }: TaskTableProps) {
@@ -30,7 +30,7 @@ function TaskTable({
 		<Table>
 			<TableHeader>
 				<TableRow>
-					<TableHead className="w-1/12 text-left">Done?</TableHead>
+					<TableHead className="w-1/12 text-left">Complete?</TableHead>
 					<TableHead className="w-8/12 text-left">Task</TableHead>
 					<TableHead className="w-1/12 text-center">Schedule</TableHead>
 					<TableHead className="w-1/12 text-center">Edit</TableHead>
@@ -42,20 +42,20 @@ function TaskTable({
 					<TableRow key={task.id}>
 						<TableCell className="text-left">
 							<Checkbox
-								checked={task.done}
-								onCheckedChange={() => onToggleTaskDone(task.id)}
+								checked={task.complete}
+								onCheckedChange={() => onToggleTaskComplete(task.id)}
 							/>
 						</TableCell>
 						<TableCell
 							className={`text-left ${
-								task.done ? "line-through text-gray-400" : ""
+								task.complete ? "line-through text-gray-400" : ""
 							}`}
 						>
 							{task.name}
 						</TableCell>
 						<TableCell
 							className={`text-center ${
-								!task.done && task.schedule
+								!task.complete && task.schedule
 									? (
 											() => {
 												const today = new Date();
@@ -80,7 +80,6 @@ function TaskTable({
 						</TableCell>
 						<TableCell className="text-center">
 							<TaskDialog
-								onTaskAdd={() => {}}
 								onTaskUpdate={onUpdateTask}
 								triggerElement={
 									<Button variant="outline" size="icon">

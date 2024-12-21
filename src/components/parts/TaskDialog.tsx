@@ -6,17 +6,20 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../ui/dialog";
+import { AddTasksForm } from "./AddTasksForm";
 import { TaskForm } from "./TaskForm";
 
 interface TaskDialogProps {
-	onTaskAdd: (task: { name: string; schedule?: Date; done: boolean }) => void;
+	onTasksAdd?: (
+		tasks: { name: string; schedule?: Date; complete: boolean }[],
+	) => void;
 	onTaskUpdate?: (task: Task) => void;
 	triggerElement: React.ReactNode;
 	task?: Task;
 }
 
 export function TaskDialog({
-	onTaskAdd,
+	onTasksAdd,
 	onTaskUpdate,
 	triggerElement,
 	task,
@@ -24,17 +27,16 @@ export function TaskDialog({
 	return (
 		<Dialog>
 			<DialogTrigger asChild>{triggerElement}</DialogTrigger>
-			<DialogContent className="sm:max-w-[425px]" key={task?.id || "new"}>
-				<DialogHeader>
-					<DialogTitle>
-						{task ? "Taskを編集できます" : "Taskの作成ができます"}
-					</DialogTitle>
-				</DialogHeader>
-				<TaskForm
-					task={task}
-					onTaskAdd={onTaskAdd}
-					onTaskUpdate={onTaskUpdate}
-				/>
+			<DialogContent className="sm:max-w-[900px]" key={task?.id || "new"}>
+				{task && onTaskUpdate && (
+					<>
+						<DialogHeader>
+							<DialogTitle>Taskの編集</DialogTitle>
+						</DialogHeader>
+						<TaskForm task={task} onTaskUpdate={onTaskUpdate} />
+					</>
+				)}
+				{onTasksAdd && <AddTasksForm onTasksAdd={onTasksAdd} />}
 			</DialogContent>
 		</Dialog>
 	);
