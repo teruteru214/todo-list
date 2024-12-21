@@ -62,9 +62,7 @@ function TaskTable({
 												const todayMidnight = new Date(
 													today.setHours(0, 0, 0, 0),
 												);
-												const taskDate = new Date(
-													task.schedule.setHours(0, 0, 0, 0),
-												);
+												const taskDate = new Date(task.schedule);
 
 												if (taskDate < todayMidnight)
 													return "bg-red-500 text-white";
@@ -76,7 +74,9 @@ function TaskTable({
 									: ""
 							}`}
 						>
-							{task.schedule ? task.schedule.toLocaleDateString() : "未設定"}
+							{task.schedule
+								? new Date(task.schedule).toLocaleDateString()
+								: "未設定"}
 						</TableCell>
 						<TableCell className="text-center">
 							<TaskDialog

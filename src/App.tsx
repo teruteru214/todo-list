@@ -5,19 +5,19 @@ const tasks = [
 	{
 		id: 1,
 		name: "リーダブルコードを読む",
-		schedule: new Date("2024-12-17"),
+		schedule: "2024-12-17",
 		complete: false,
 	},
 	{
 		id: 2,
 		name: "新しいAPIのドキュメントを確認",
-		schedule: new Date("2024-12-16"),
+		schedule: "2024-12-16",
 		complete: true,
 	},
 	{
 		id: 3,
 		name: "バグ修正を行う",
-		schedule: new Date("2024-12-20"),
+		schedule: "2024-12-20",
 		complete: false,
 	},
 ];

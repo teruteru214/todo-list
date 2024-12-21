@@ -59,14 +59,14 @@ export function useTaskManager(initialTasks: Task[]) {
 }
 
 export const getDateClassName = (
-	schedule: Date | undefined,
+	schedule: string | undefined,
 	complete: boolean,
 ) => {
 	return useMemo(() => {
 		if (!schedule || complete) return "";
 		const today = new Date();
 		const todayMidnight = new Date(today.setHours(0, 0, 0, 0));
-		const taskDate = new Date(schedule.setHours(0, 0, 0, 0));
+		const taskDate = new Date(schedule);
 
 		if (taskDate < todayMidnight) return "bg-red-500 text-white";
 		if (taskDate.getTime() === todayMidnight.getTime())

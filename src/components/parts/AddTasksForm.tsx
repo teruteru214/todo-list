@@ -1,11 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
-import { CalendarIcon, Plus, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
-import { cn } from "../../lib/utils";
 import { Button } from "../ui/button";
-import { Calendar } from "../ui/calendar";
 import { Checkbox } from "../ui/checkbox";
 import {
 	Form,
@@ -15,7 +12,6 @@ import {
 	FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Table, TableBody, TableCell, TableHead, TableRow } from "../ui/table";
 
 const formSchema = z.object({
@@ -25,7 +21,7 @@ const formSchema = z.object({
 				.string()
 				.min(1, "Task名は必須です")
 				.max(100, "100文字以内で入力してください"),
-			schedule: z.string().optional(),
+			schedule: z.string().optional(), // scheduleをstring型に変更
 			complete: z.boolean().optional().default(false),
 		}),
 	),
@@ -33,7 +29,7 @@ const formSchema = z.object({
 
 interface AddTasksFormProps {
 	onTasksAdd: (
-		tasks: { name: string; schedule?: Date; complete: boolean }[],
+		tasks: { name: string; schedule?: string; complete: boolean }[],
 	) => void;
 }
 
@@ -53,7 +49,7 @@ export function AddTasksForm({ onTasksAdd }: AddTasksFormProps) {
 	const handleSubmit = (data: z.infer<typeof formSchema>) => {
 		const tasks = data.tasks.map((task) => ({
 			name: task.name,
-			schedule: task.schedule ? new Date(task.schedule) : undefined,
+			schedule: task.schedule || undefined,
 			complete: task.complete,
 		}));
 		onTasksAdd(tasks);
@@ -113,40 +109,11 @@ export function AddTasksForm({ onTasksAdd }: AddTasksFormProps) {
 										render={({ field }) => (
 											<FormItem>
 												<FormControl>
-													<Popover>
-														<PopoverTrigger asChild>
-															<Button
-																variant="outline"
-																size="sm"
-																className={cn(
-																	"justify-start text-left font-normal text-sm",
-																	!field.value && "text-muted-foreground",
-																)}
-															>
-																<CalendarIcon className="mr-2" />
-																{field.value
-																	? format(new Date(field.value), "yyyy/MM/dd")
-																	: "日付を入力"}
-															</Button>
-														</PopoverTrigger>
-														<PopoverContent>
-															<Calendar
-																mode="single"
-																selected={
-																	field.value
-																		? new Date(field.value)
-																		: undefined
-																}
-																onSelect={(selectedDate) =>
-																	field.onChange(
-																		selectedDate
-																			? format(selectedDate, "yyyy-MM-dd")
-																			: "",
-																	)
-																}
-															/>
-														</PopoverContent>
-													</Popover>
+													<Input
+														type="date"
+														value={field.value}
+														onChange={(e) => field.onChange(e.target.value)}
+													/>
 												</FormControl>
 												<FormMessage />
 											</FormItem>

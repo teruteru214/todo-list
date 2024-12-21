@@ -11,7 +11,7 @@ import { TaskForm } from "./TaskForm";
 
 interface TaskDialogProps {
 	onTasksAdd?: (
-		tasks: { name: string; schedule?: Date; complete: boolean }[],
+		tasks: { name: string; schedule?: string; complete: boolean }[],
 	) => void;
 	onTaskUpdate?: (task: Task) => void;
 	triggerElement: React.ReactNode;

@@ -1,12 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { cn } from "../../lib/utils";
 import { Button } from "../ui/button";
-import { Calendar } from "../ui/calendar";
 import { Checkbox } from "../ui/checkbox";
 import {
 	Form,
@@ -16,7 +11,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "../ui/form";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 
 const formSchema = z.object({
@@ -29,11 +24,11 @@ const formSchema = z.object({
 });
 
 interface TaskFormProps {
-	task: { id: number; name: string; schedule?: Date; complete: boolean };
+	task: { id: number; name: string; schedule?: string; complete: boolean };
 	onTaskUpdate: (task: {
 		id: number;
 		name: string;
-		schedule?: Date;
+		schedule?: string;
 		complete: boolean;
 	}) => void;
 }
@@ -42,28 +37,21 @@ export function TaskForm({ task, onTaskUpdate }: TaskFormProps) {
 	const form = useForm<z.infer<typeof formSchema>>({
 		defaultValues: {
 			name: task.name,
-			schedule: task.schedule
-				? format(new Date(task.schedule), "yyyy-MM-dd")
-				: "",
+			schedule: task.schedule || "",
 			complete: task.complete,
 		},
 		resolver: zodResolver(formSchema),
 	});
 
-	const [date, setDate] = useState<Date | undefined>(
-		task.schedule ? new Date(task.schedule) : undefined,
-	);
-
 	const handleSubmit = (data: z.infer<typeof formSchema>) => {
 		const taskData = {
 			id: task.id,
 			name: data.name,
-			schedule: data.schedule ? new Date(data.schedule) : undefined,
+			schedule: data.schedule || undefined,
 			complete: data.complete,
 		};
 		onTaskUpdate(taskData);
 		form.reset();
-		setDate(undefined);
 	};
 
 	return (
@@ -86,41 +74,14 @@ export function TaskForm({ task, onTaskUpdate }: TaskFormProps) {
 					control={form.control}
 					name="schedule"
 					render={({ field }) => (
-						<FormItem className="flex flex-col">
+						<FormItem className="flex flex-col w-36">
 							<FormLabel className="mb-1">実行予定日</FormLabel>
 							<FormControl>
-								<Popover>
-									<PopoverTrigger asChild>
-										<Button
-											variant="outline"
-											className={cn(
-												"justify-start text-left font-normal",
-												!date && "text-muted-foreground",
-											)}
-										>
-											<CalendarIcon className="mr-2" />
-											{date ? (
-												format(date, "yyyy/MM/dd")
-											) : (
-												<span>日にちを入力してください</span>
-											)}
-										</Button>
-									</PopoverTrigger>
-									<PopoverContent>
-										<Calendar
-											mode="single"
-											selected={date}
-											onSelect={(selectedDate) => {
-												setDate(selectedDate);
-												field.onChange(
-													selectedDate
-														? format(selectedDate, "yyyy-MM-dd")
-														: "",
-												);
-											}}
-										/>
-									</PopoverContent>
-								</Popover>
+								<Input
+									type="date"
+									value={field.value}
+									onChange={(e) => field.onChange(e.target.value)}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
