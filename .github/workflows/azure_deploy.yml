@@ -21,11 +21,17 @@ jobs:
         run: |
           curl -fsSL https://bun.sh/install | bash
           echo "export PATH=\"$HOME/.bun/bin:\$PATH\"" >> $GITHUB_ENV
+          export PATH="$HOME/.bun/bin:$PATH"
+          bun --version
 
       - name: Install Dependencies
+        env:
+          PATH: /home/runner/.bun/bin:$PATH
         run: bun install
 
       - name: Build the App
+        env:
+          PATH: /home/runner/.bun/bin:$PATH
         run: bun build
 
       - name: Deploy to Azure Static Web Apps
