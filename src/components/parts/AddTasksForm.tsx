@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, X } from "lucide-react";
+import { Asterisk, Plus, X } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
@@ -12,7 +12,15 @@ import {
 	FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { Table, TableBody, TableCell, TableHead, TableRow } from "../ui/table";
+import {
+	Table,
+	TableBody,
+	TableCaption,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "../ui/table";
 
 const formSchema = z.object({
 	tasks: z.array(
@@ -73,14 +81,20 @@ export function AddTasksForm({ onTasksAdd }: AddTasksFormProps) {
 					</Button>
 				</div>
 				<Table className="w-full border-collapse border border-gray-200">
-					<thead className="bg-gray-100">
+					<TableCaption className="text-sm text-gray-500">
+						カレンダーアイコンをタッチすると、カレンダーフォーマットで期日を入力できます
+					</TableCaption>
+					<TableHeader className="bg-gray-100">
 						<TableRow>
-							<TableHead className="w-8/12">Task</TableHead>
+							<TableHead className="w-8/12 flex items-center">
+								Task
+								<Asterisk className="text-red-500 w-4 h-4" />
+							</TableHead>
 							<TableHead className="w-2/12">Schedule</TableHead>
 							<TableHead className="w-1/12">Complete?</TableHead>
 							<TableHead className="w-1/12">Delete</TableHead>
 						</TableRow>
-					</thead>
+					</TableHeader>
 					<TableBody>
 						{fields.map((field, index) => (
 							<TableRow key={field.id} className="hover:bg-gray-50">
@@ -92,7 +106,7 @@ export function AddTasksForm({ onTasksAdd }: AddTasksFormProps) {
 											<FormItem>
 												<FormControl>
 													<Input
-														placeholder="taskを入力"
+														placeholder="taskを入力(必須)"
 														{...field}
 														className="text-sm"
 													/>
