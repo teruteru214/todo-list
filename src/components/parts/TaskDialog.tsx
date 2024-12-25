@@ -33,7 +33,15 @@ export function TaskDialog({
 						<DialogHeader>
 							<DialogTitle>Taskの編集</DialogTitle>
 						</DialogHeader>
-						<TaskForm task={task} onTaskUpdate={onTaskUpdate} />
+						<TaskForm
+							task={task}
+							onTaskUpdate={onTaskUpdate}
+							onClose={() =>
+								document.activeElement?.dispatchEvent(
+									new MouseEvent("click", { bubbles: true }),
+								)
+							}
+						/>
 					</>
 				)}
 				{onTasksAdd && <AddTasksForm onTasksAdd={onTasksAdd} />}

@@ -4,6 +4,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
+import { DialogClose } from "../ui/dialog";
 import {
 	Form,
 	FormControl,
@@ -29,7 +30,7 @@ const formSchema = z.object({
 				.string()
 				.min(1, "Task名は必須です")
 				.max(100, "100文字以内で入力してください"),
-			schedule: z.string().optional(), // scheduleをstring型に変更
+			schedule: z.string().optional(),
 			complete: z.boolean().optional().default(false),
 		}),
 	),
@@ -76,9 +77,11 @@ export function AddTasksForm({ onTasksAdd }: AddTasksFormProps) {
 						<Plus className="mr-2" />
 						NEW
 					</Button>
-					<Button type="submit" disabled={!form.formState.isValid}>
-						保存する
-					</Button>
+					<DialogClose asChild>
+						<Button type="submit" disabled={!form.formState.isValid}>
+							保存する
+						</Button>
+					</DialogClose>
 				</div>
 				<Table className="w-full border-collapse border border-gray-200">
 					<TableCaption className="text-sm text-gray-500">

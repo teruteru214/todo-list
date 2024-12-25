@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
+import { DialogClose } from "../ui/dialog";
 import {
 	Form,
 	FormControl,
@@ -31,9 +32,10 @@ interface TaskFormProps {
 		schedule?: string;
 		complete: boolean;
 	}) => void;
+	onClose: () => void;
 }
 
-export function TaskForm({ task, onTaskUpdate }: TaskFormProps) {
+export function TaskForm({ task, onTaskUpdate, onClose }: TaskFormProps) {
 	const form = useForm<z.infer<typeof formSchema>>({
 		defaultValues: {
 			name: task.name,
@@ -52,6 +54,7 @@ export function TaskForm({ task, onTaskUpdate }: TaskFormProps) {
 		};
 		onTaskUpdate(taskData);
 		form.reset();
+		onClose();
 	};
 
 	return (
@@ -105,13 +108,15 @@ export function TaskForm({ task, onTaskUpdate }: TaskFormProps) {
 						</FormItem>
 					)}
 				/>
-				<Button
-					type="submit"
-					className="w-full"
-					disabled={!form.formState.isValid}
-				>
-					更新する
-				</Button>
+				<DialogClose asChild>
+					<Button
+						type="submit"
+						className="w-full"
+						disabled={!form.formState.isValid}
+					>
+						更新する
+					</Button>
+				</DialogClose>
 			</form>
 		</Form>
 	);
