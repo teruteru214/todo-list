@@ -1,6 +1,21 @@
 import { useCallback, useMemo, useState } from "react";
 import type { Task } from "../types";
 
+export async function fetchTasks(): Promise<Task[]> {
+	try {
+		const response = await fetch("http://localhost:5127/api/tasks");
+		if (!response.ok) {
+			throw new Error(`Failed to fetch tasks: ${response.statusText}`);
+		}
+		const fetchedTasks: Task[] = await response.json();
+		return fetchedTasks;
+	} catch (error) {
+		alert("タスクの取得に失敗しました。再試行してください。");
+		console.error(error);
+		throw error;
+	}
+}
+
 export function useTaskManager(initialTasks: Task[]) {
 	const [tasks, setTasks] = useState<Task[]>(initialTasks);
 	const [filter, setFilter] = useState<"all" | "completed" | "incomplete">(
@@ -8,35 +23,125 @@ export function useTaskManager(initialTasks: Task[]) {
 	);
 
 	const addTasks = useCallback(
-		(newTasks: Omit<Task, "id">[]) => {
-			const tasksWithIds = newTasks.map((task, index) => ({
+		async (newTasks: Omit<Task, "id">[]) => {
+			const previousTasks = [...tasks];
+
+			const tempTasks = newTasks.map((task, index) => ({
 				id: tasks.length + index + 1,
 				...task,
 			}));
-			setTasks((prevTasks) => [...prevTasks, ...tasksWithIds]);
+			setTasks((prevTasks) => [...prevTasks, ...tempTasks]);
+
+			try {
+				const response = await fetch(
+					"http://localhost:5127/api/tasks/bulk-create",
+					{
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify(newTasks),
+					},
+				);
+				if (!response.ok) {
+					throw new Error("Failed to add tasks.");
+				}
+			} catch (error) {
+				alert("タスクの追加に失敗しました。");
+				console.error(error);
+				setTasks(previousTasks);
+			}
 		},
 		[tasks],
 	);
 
-	const updateTask = useCallback((updatedTask: Task) => {
-		setTasks((prevTasks) =>
-			prevTasks.map((task) =>
-				task.id === updatedTask.id ? updatedTask : task,
-			),
-		);
-	}, []);
+	const updateTask = useCallback(
+		async (updatedTask: Task) => {
+			const previousTasks = [...tasks];
 
-	const toggleTaskComplete = useCallback((taskId: number) => {
-		setTasks((prevTasks) =>
-			prevTasks.map((task) =>
-				task.id === taskId ? { ...task, complete: !task.complete } : task,
-			),
-		);
-	}, []);
+			setTasks((prevTasks) =>
+				prevTasks.map((task) =>
+					task.id === updatedTask.id ? updatedTask : task,
+				),
+			);
 
-	const deleteTask = useCallback((taskId: number) => {
-		setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
-	}, []);
+			try {
+				const response = await fetch(
+					`http://localhost:5127/api/tasks/${updatedTask.id}`,
+					{
+						method: "PUT",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify(updatedTask),
+					},
+				);
+				if (!response.ok) {
+					throw new Error("Failed to update task.");
+				}
+			} catch (error) {
+				alert("タスクの更新に失敗しました。");
+				console.error(error);
+				setTasks(previousTasks);
+			}
+		},
+		[tasks],
+	);
+
+	const toggleTaskComplete = useCallback(
+		async (taskId: number) => {
+			const previousTasks = [...tasks];
+
+			setTasks((prevTasks) =>
+				prevTasks.map((task) =>
+					task.id === taskId ? { ...task, complete: !task.complete } : task,
+				),
+			);
+
+			try {
+				const response = await fetch(
+					`http://localhost:5127/api/tasks/${taskId}/toggle-complete`,
+					{
+						method: "PATCH",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({
+							complete: !previousTasks.find((task) => task.id === taskId)
+								?.complete,
+						}),
+					},
+				);
+				if (!response.ok) {
+					throw new Error("Failed to toggle task completion.");
+				}
+			} catch (error) {
+				alert("タスクの完了状態の変更に失敗しました。");
+				console.error(error);
+				setTasks(previousTasks);
+			}
+		},
+		[tasks],
+	);
+
+	const deleteTask = useCallback(
+		async (taskId: number) => {
+			const previousTasks = [...tasks];
+
+			setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+
+			try {
+				const response = await fetch(
+					`http://localhost:5127/api/tasks/${taskId}`,
+					{
+						method: "DELETE",
+					},
+				);
+				if (!response.ok) {
+					throw new Error("Failed to delete task.");
+				}
+			} catch (error) {
+				alert("タスクの削除に失敗しました。");
+				console.error(error);
+				setTasks(previousTasks);
+			}
+		},
+		[tasks],
+	);
 
 	const filteredTasks = useMemo(() => {
 		return tasks.filter((task) => {
