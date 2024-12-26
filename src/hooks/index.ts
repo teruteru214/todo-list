@@ -3,9 +3,7 @@ import type { Task } from "../types";
 
 export async function fetchTasks(): Promise<Task[]> {
 	try {
-		const response = await fetch(
-			"https://todo-back-ffctg6fgh0aadsg8.eastasia-01.azurewebsites.net/api/tasks",
-		);
+		const response = await fetch("http://localhost:5127/api/tasks");
 		if (!response.ok) {
 			throw new Error(`Failed to fetch tasks: ${response.statusText}`);
 		}
@@ -28,15 +26,18 @@ export function useTaskManager(initialTasks: Task[]) {
 		async (newTasks: Omit<Task, "id">[]) => {
 			const previousTasks = [...tasks];
 
+			const maxId =
+				tasks.length > 0 ? Math.max(...tasks.map((task) => task.id)) : 0;
+
 			const tempTasks = newTasks.map((task, index) => ({
-				id: tasks.length + index + 1,
+				id: maxId + index + 1,
 				...task,
 			}));
 			setTasks((prevTasks) => [...prevTasks, ...tempTasks]);
 
 			try {
 				const response = await fetch(
-					"https://todo-back-ffctg6fgh0aadsg8.eastasia-01.azurewebsites.net/api/tasks/bulk-create",
+					"http://localhost:5127/api/tasks/bulk-create",
 					{
 						method: "POST",
 						headers: { "Content-Type": "application/json" },
@@ -67,7 +68,7 @@ export function useTaskManager(initialTasks: Task[]) {
 
 			try {
 				const response = await fetch(
-					`https://todo-back-ffctg6fgh0aadsg8.eastasia-01.azurewebsites.net/api/tasks/${updatedTask.id}`,
+					`http://localhost:5127/api/tasks/${updatedTask.id}`,
 					{
 						method: "PUT",
 						headers: { "Content-Type": "application/json" },
@@ -98,7 +99,7 @@ export function useTaskManager(initialTasks: Task[]) {
 
 			try {
 				const response = await fetch(
-					`https://todo-back-ffctg6fgh0aadsg8.eastasia-01.azurewebsites.net/api/tasks/${taskId}/toggle-complete`,
+					`http://localhost:5127/api/tasks/${taskId}/toggle-complete`,
 					{
 						method: "PATCH",
 						headers: { "Content-Type": "application/json" },
@@ -128,7 +129,7 @@ export function useTaskManager(initialTasks: Task[]) {
 
 			try {
 				const response = await fetch(
-					`https://todo-back-ffctg6fgh0aadsg8.eastasia-01.azurewebsites.net/api/tasks/${taskId}`,
+					`http://localhost:5127/api/tasks/${taskId}`,
 					{
 						method: "DELETE",
 					},
