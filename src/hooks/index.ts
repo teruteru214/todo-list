@@ -3,7 +3,9 @@ import type { Task } from "../types";
 
 export async function fetchTasks(): Promise<Task[]> {
 	try {
-		const response = await fetch("http://localhost:5127/api/tasks");
+		const response = await fetch(
+			"https://todo-back-ffctg6fgh0aadsg8.eastasia-01.azurewebsites.net//api/tasks",
+		);
 		if (!response.ok) {
 			throw new Error(`Failed to fetch tasks: ${response.statusText}`);
 		}
@@ -37,7 +39,7 @@ export function useTaskManager(initialTasks: Task[]) {
 
 			try {
 				const response = await fetch(
-					"http://localhost:5127/api/tasks/bulk-create",
+					"https://todo-back-ffctg6fgh0aadsg8.eastasia-01.azurewebsites.net//api/tasks/bulk-create",
 					{
 						method: "POST",
 						headers: { "Content-Type": "application/json" },
@@ -68,7 +70,7 @@ export function useTaskManager(initialTasks: Task[]) {
 
 			try {
 				const response = await fetch(
-					`http://localhost:5127/api/tasks/${updatedTask.id}`,
+					`https://todo-back-ffctg6fgh0aadsg8.eastasia-01.azurewebsites.net//api/tasks/${updatedTask.id}`,
 					{
 						method: "PUT",
 						headers: { "Content-Type": "application/json" },
@@ -99,7 +101,7 @@ export function useTaskManager(initialTasks: Task[]) {
 
 			try {
 				const response = await fetch(
-					`http://localhost:5127/api/tasks/${taskId}/toggle-complete`,
+					`https://todo-back-ffctg6fgh0aadsg8.eastasia-01.azurewebsites.net//api/tasks/${taskId}/toggle-complete`,
 					{
 						method: "PATCH",
 						headers: { "Content-Type": "application/json" },
@@ -129,7 +131,7 @@ export function useTaskManager(initialTasks: Task[]) {
 
 			try {
 				const response = await fetch(
-					`http://localhost:5127/api/tasks/${taskId}`,
+					`https://todo-back-ffctg6fgh0aadsg8.eastasia-01.azurewebsites.net//api/tasks/${taskId}`,
 					{
 						method: "DELETE",
 					},
