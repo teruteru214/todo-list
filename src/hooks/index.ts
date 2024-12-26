@@ -4,7 +4,7 @@ import type { Task } from "../types";
 export async function fetchTasks(): Promise<Task[]> {
 	try {
 		const response = await fetch(
-			"https://todo-back-ffctg6fgh0aadsg8.eastasia-01.azurewebsites.net//api/tasks",
+			"https://todo-back-ffctg6fgh0aadsg8.eastasia-01.azurewebsites.net/api/tasks",
 		);
 		if (!response.ok) {
 			throw new Error(`Failed to fetch tasks: ${response.statusText}`);
@@ -23,23 +23,29 @@ export function useTaskManager(initialTasks: Task[]) {
 	const [filter, setFilter] = useState<"all" | "completed" | "incomplete">(
 		"all",
 	);
+	const [highestId, setHighestId] = useState<number>(
+		initialTasks.length > 0
+			? Math.max(...initialTasks.map((task) => task.id))
+			: 0,
+	);
 
 	const addTasks = useCallback(
 		async (newTasks: Omit<Task, "id">[]) => {
 			const previousTasks = [...tasks];
 
-			const maxId =
-				tasks.length > 0 ? Math.max(...tasks.map((task) => task.id)) : 0;
+			let currentHighestId = highestId;
+			const tempTasks = newTasks.map((task, index) => {
+				const id = currentHighestId + 1 + index;
+				currentHighestId = Math.max(currentHighestId, id);
+				return { id, ...task };
+			});
 
-			const tempTasks = newTasks.map((task, index) => ({
-				id: maxId + index + 1,
-				...task,
-			}));
 			setTasks((prevTasks) => [...prevTasks, ...tempTasks]);
+			setHighestId(currentHighestId);
 
 			try {
 				const response = await fetch(
-					"https://todo-back-ffctg6fgh0aadsg8.eastasia-01.azurewebsites.net//api/tasks/bulk-create",
+					"https://todo-back-ffctg6fgh0aadsg8.eastasia-01.azurewebsites.net/api/tasks/bulk-create",
 					{
 						method: "POST",
 						headers: { "Content-Type": "application/json" },
@@ -55,7 +61,7 @@ export function useTaskManager(initialTasks: Task[]) {
 				setTasks(previousTasks);
 			}
 		},
-		[tasks],
+		[tasks, highestId],
 	);
 
 	const updateTask = useCallback(
@@ -70,7 +76,7 @@ export function useTaskManager(initialTasks: Task[]) {
 
 			try {
 				const response = await fetch(
-					`https://todo-back-ffctg6fgh0aadsg8.eastasia-01.azurewebsites.net//api/tasks/${updatedTask.id}`,
+					`https://todo-back-ffctg6fgh0aadsg8.eastasia-01.azurewebsites.net/api/tasks/${updatedTask.id}`,
 					{
 						method: "PUT",
 						headers: { "Content-Type": "application/json" },
@@ -101,7 +107,7 @@ export function useTaskManager(initialTasks: Task[]) {
 
 			try {
 				const response = await fetch(
-					`https://todo-back-ffctg6fgh0aadsg8.eastasia-01.azurewebsites.net//api/tasks/${taskId}/toggle-complete`,
+					`https://todo-back-ffctg6fgh0aadsg8.eastasia-01.azurewebsites.net/api/tasks/${taskId}/toggle-complete`,
 					{
 						method: "PATCH",
 						headers: { "Content-Type": "application/json" },
@@ -131,7 +137,7 @@ export function useTaskManager(initialTasks: Task[]) {
 
 			try {
 				const response = await fetch(
-					`https://todo-back-ffctg6fgh0aadsg8.eastasia-01.azurewebsites.net//api/tasks/${taskId}`,
+					`https://todo-back-ffctg6fgh0aadsg8.eastasia-01.azurewebsites.net/api/tasks/${taskId}`,
 					{
 						method: "DELETE",
 					},
