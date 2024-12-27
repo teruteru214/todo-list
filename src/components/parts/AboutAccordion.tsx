@@ -21,7 +21,7 @@ export function AboutAccordion() {
 				<AccordionContent className="space-y-4">
 					<ul className="flex items-center">
 						<Plus />
-						<p>・・・Taskの作成</p>
+						<p>・・・Taskの作成(複数可)</p>
 					</ul>
 					<ul className="flex items-center">
 						<ListTodo />
