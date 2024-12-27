@@ -1,50 +1,43 @@
-# React + TypeScript + Vite
+# 使用技術
+## フロントエンド
+- React
+- Typescript
+- TailwindCSS
+- Shadcn/ui
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## インフラ
+- Azure Static Web Apps
 
-Currently, two official plugins are available:
+## CI/CD
+- Github Actions
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ビルドツール
+- Vite
 
-## Expanding the ESLint configuration
+## Formatter & Linter
+- Biome
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## パッケージマネージャ-
+- bun
 
-- Configure the top-level `parserOptions` property like this:
+Azure環境ではbun非対応であるため、本番環境ではnpmを使用しています。
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## その他ライブラリ
+- react-hook-form
+- zod
+
+# ディレクトリ
+```
+src
+├─ components
+│  ├─ parts(自作コンポーネント)
+│  └─ ui(Shadcnからインストールしたコンポーネント)
+├─ hooks
+│  └─ index.ts(タスク管理の関数)
+├─ types
+│  └─ index.ts(全体で使用する型)
+└─ App.tsx
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+# 画面遷移図
+[figma](https://www.figma.com/design/SMQJVYIwojJK0oQP9CgskC/Todo%E3%82%A2%E3%83%97%E3%83%AA?node-id=0-1&p=f&t=D38jyyTNhMnM4tYm-0)
