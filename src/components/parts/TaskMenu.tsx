@@ -26,6 +26,7 @@ function TaskMenu({ tasks: initialTasks }: TasksProp) {
 							<Plus />
 						</Button>
 					}
+					initialTasks={initialTasks}
 				/>
 				<div className="space-x-4">
 					<Button

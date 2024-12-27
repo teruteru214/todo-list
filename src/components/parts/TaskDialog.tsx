@@ -16,6 +16,7 @@ interface TaskDialogProps {
 	onTaskUpdate?: (task: Task) => void;
 	triggerElement: React.ReactNode;
 	task?: Task;
+	initialTasks?: Task[];
 }
 
 export function TaskDialog({
@@ -23,6 +24,7 @@ export function TaskDialog({
 	onTaskUpdate,
 	triggerElement,
 	task,
+	initialTasks,
 }: TaskDialogProps) {
 	return (
 		<Dialog>
@@ -44,7 +46,12 @@ export function TaskDialog({
 						/>
 					</>
 				)}
-				{onTasksAdd && <AddTasksForm onTasksAdd={onTasksAdd} />}
+				{onTasksAdd && (
+					<AddTasksForm
+						onTasksAdd={onTasksAdd}
+						initialTasks={initialTasks || []}
+					/>
+				)}
 			</DialogContent>
 		</Dialog>
 	);
