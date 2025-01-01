@@ -1,27 +1,27 @@
 import { useEffect, useState } from "react";
-
 import { AboutAccordion } from "./components/parts/AboutAccordion";
 import TaskMenu from "./components/parts/TaskMenu";
 import { fetchTasks } from "./hooks";
 import type { Task } from "./types";
 
 function App() {
-	const [tasks, setTasks] = useState<Task[]>([]); //Task初期値の保持のみに使用。
+	const [tasks, setTasks] = useState<Task[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
-		const loadTasks = async () => {
+		const fetchInitialTasks = async () => {
+			setIsLoading(true);
 			try {
 				const fetchedTasks = await fetchTasks();
 				setTasks(fetchedTasks);
 			} catch {
-				alert("初期タスクの取得に失敗しました。");
+				alert("タスクの取得に失敗しました。");
 			} finally {
 				setIsLoading(false);
 			}
 		};
 
-		loadTasks();
+		fetchInitialTasks();
 	}, []);
 
 	return (
@@ -33,7 +33,7 @@ function App() {
 						<div className="animate-spin h-10 w-10 border-4 border-black rounded-full border-t-transparent" />
 					</div>
 				) : (
-					<TaskMenu tasks={tasks} />
+					<TaskMenu initialTasks={tasks} />
 				)}
 				<AboutAccordion />
 			</div>

@@ -2,7 +2,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Asterisk, Plus, X } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
-import type { Task } from "../../types";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import { DialogClose } from "../ui/dialog";
@@ -41,10 +40,9 @@ interface AddTasksFormProps {
 	onTasksAdd: (
 		tasks: { name: string; schedule?: string; complete: boolean }[],
 	) => void;
-	initialTasks: Task[];
 }
 
-export function AddTasksForm({ onTasksAdd, initialTasks }: AddTasksFormProps) {
+export function AddTasksForm({ onTasksAdd }: AddTasksFormProps) {
 	const form = useForm<z.infer<typeof formSchema>>({
 		defaultValues: {
 			tasks: [{ name: "", schedule: "", complete: false }],
@@ -66,13 +64,6 @@ export function AddTasksForm({ onTasksAdd, initialTasks }: AddTasksFormProps) {
 
 		try {
 			await onTasksAdd(tasks);
-
-			if (initialTasks.length === 0) {
-				window.location.href =
-					"https://green-island-06327a400.4.azurestaticapps.net/";
-				return;
-			}
-
 			form.reset();
 		} catch (error) {
 			console.error("タスクの追加中にエラーが発生しました:", error);

@@ -1,11 +1,15 @@
 import { ListTodo, Plus, Square, SquareCheck } from "lucide-react";
 import { useTaskManager } from "../../hooks";
-import type { TasksProp } from "../../types";
+import type { Task } from "../../types";
 import { Button } from "../ui/button";
 import { TaskDialog } from "./TaskDialog";
 import TaskTable from "./TaskTable";
 
-function TaskMenu({ tasks: initialTasks }: TasksProp) {
+interface TaskMenuProps {
+	initialTasks: Task[];
+}
+
+function TaskMenu({ initialTasks }: TaskMenuProps) {
 	const {
 		filteredTasks,
 		filter,
@@ -26,7 +30,6 @@ function TaskMenu({ tasks: initialTasks }: TasksProp) {
 							<Plus />
 						</Button>
 					}
-					initialTasks={initialTasks}
 				/>
 				<div className="space-x-4">
 					<Button

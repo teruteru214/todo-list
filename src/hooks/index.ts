@@ -23,25 +23,10 @@ export function useTaskManager(initialTasks: Task[]) {
 	const [filter, setFilter] = useState<"all" | "completed" | "incomplete">(
 		"all",
 	);
-	const [highestId, setHighestId] = useState<number>(
-		initialTasks.length > 0
-			? Math.max(...initialTasks.map((task) => task.id))
-			: 0,
-	);
 
 	const addTasks = useCallback(
 		async (newTasks: Omit<Task, "id">[]) => {
 			const previousTasks = [...tasks];
-
-			let currentHighestId = highestId;
-			const tempTasks = newTasks.map((task, index) => {
-				const id = currentHighestId + 1 + index;
-				currentHighestId = Math.max(currentHighestId, id);
-				return { id, ...task };
-			});
-
-			setTasks((prevTasks) => [...prevTasks, ...tempTasks]);
-			setHighestId(currentHighestId);
 
 			try {
 				const response = await fetch(
@@ -55,13 +40,16 @@ export function useTaskManager(initialTasks: Task[]) {
 				if (!response.ok) {
 					throw new Error("Failed to add tasks.");
 				}
+
+				const updatedTasks = await fetchTasks();
+				setTasks(updatedTasks);
 			} catch (error) {
-				alert("タスクの追加に失敗しました。");
+				alert("タスクの追加または更新に失敗しました。");
 				console.error(error);
 				setTasks(previousTasks);
 			}
 		},
-		[tasks, highestId],
+		[tasks],
 	);
 
 	const updateTask = useCallback(
