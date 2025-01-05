@@ -1,7 +1,7 @@
 # Todoアプリ概要
 
 ## アプリURL
-初期表示にラグあり
+初期表示にラグが発生しています。この原因は、データベースが停止状態にあり、再起動して正常に動作を開始するまで時間がかかるためです。
 - [Vite + React + TypeScript 版 Todo アプリ](https://green-island-06327a400.4.azurestaticapps.net/)
 
 ## インフラ構成図
